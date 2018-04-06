@@ -37,8 +37,8 @@ def read_and_decode(filename):
 
 
 def load_data(img_rows=224, img_cols=224):
-  Train_img, Train_label = read_and_decode("OriginalData/Dog120_UseSmote_SISURF_while/tfrecordsResult/train.tfrecords")
-  Test_img, Test_label = read_and_decode("OriginalData/Dog120_UseSmote_SISURF_while/tfrecordsResult/test.tfrecords")
+  Train_img, Train_label = read_and_decode("../resources/train.tfrecords")
+  Test_img, Test_label = read_and_decode("../resource/test.tfrecords")
   #Train_img, Train_label = read_and_decode("OriginalData/Animals_50class_UseSMOTE/tfrecordsResult/train.tfrecords")
   #Test_img, Test_label = read_and_decode("OriginalData/Animals_50class_UseSMOTE/tfrecordsResult/test.tfrecords")
   #Train_img, Train_label = read_and_decode("OriginalData/Dog_120class_UseSmote/tfrecordsResult/train.tfrecords")

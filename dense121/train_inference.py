@@ -1,5 +1,6 @@
 from densenet121 import DenseNet
 from data_loader import load_data
+from keras import TensorBoard
 
 if __name__ == '__main__':
   
@@ -26,7 +27,8 @@ if __name__ == '__main__':
             shuffle=True,
             verbose=1,
             validation_data=(X_valid, Y_valid),
+            callbacks=[TensorBoard(log_dir='./log')]
           )
-  model.save_weights('densenet121_dog120_epoch40_batchsize16_UseSmote_fromSISURFmodelWhile.h5')
+  model.save_weights('dense121_result.h5')
   # Make predictions
   predictions_valid = model.predict(X_valid, batch_size=batch_size, verbose=1)
