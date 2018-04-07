@@ -1,4 +1,7 @@
 .vscode
 */__pycache__
+*.pyc
 resources/train
 resources/test
+*/log
+*.tfrecords

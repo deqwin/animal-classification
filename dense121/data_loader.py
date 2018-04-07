@@ -37,8 +37,8 @@ def read_and_decode(filename):
 
 
 def load_data(img_rows=224, img_cols=224):
-  Train_img, Train_label = read_and_decode("../resources/train.tfrecords")
-  Test_img, Test_label = read_and_decode("../resource/test.tfrecords")
+  Train_img, Train_label = read_and_decode("../resources/tfrecordsResult/train.tfrecords")
+  Test_img, Test_label = read_and_decode("../resources/tfrecordsResult/test.tfrecords")
   #Train_img, Train_label = read_and_decode("OriginalData/Animals_50class_UseSMOTE/tfrecordsResult/train.tfrecords")
   #Test_img, Test_label = read_and_decode("OriginalData/Animals_50class_UseSMOTE/tfrecordsResult/test.tfrecords")
   #Train_img, Train_label = read_and_decode("OriginalData/Dog_120class_UseSmote/tfrecordsResult/train.tfrecords")
@@ -47,33 +47,29 @@ def load_data(img_rows=224, img_cols=224):
   Train_img_batch, Train_label_batch = \
     tf.train.shuffle_batch([Train_img, Train_label], batch_size=24000, capacity=4000, min_after_dequeue=2000)
 
-  # init1 = tf.initialize_all_variables()
-  with tf.Session() as sess1:
-    # sess1.run(init1)
-    # threads1 = tf.train.start_queue_runners(sess=sess1)
-    for i in range(1):
-      Train_val, Train_l = sess1.run([Train_img_batch, Train_label_batch])
-    sess1.close()
-
-
+  with tf.Session() as sess_train:
+    sess_train.run(tf.global_variables_initializer())
+    threads_train = tf.train.start_queue_runners(sess=sess_train)
+    Train_val, Train_lab = sess_train.run([Train_img_batch, Train_label_batch])
+    sess_train.close()
 
 
   Test_img_batch, Test_label_batch = \
     tf.train.shuffle_batch([Test_img, Test_label], batch_size=4800, capacity=2000, min_after_dequeue=1000)
-  # init = tf.initialize_all_variables()
-  with tf.Session() as sess2:
-    # sess2.run(init)
-    # threads2 = tf.train.start_queue_runners(sess=sess2)
-    for i in range(1):
-      Test_val, Test_l = sess2.run([Test_img_batch, Test_label_batch])
+
+  with tf.Session() as sess_test:
+    sess_test.run(tf.global_variables_initializer())
+    threads_test = tf.train.start_queue_runners(sess=sess_test)
+    Test_val, Test_lab = sess_test.run([Test_img_batch, Test_label_batch])
+    sess_test.close()
 
 
   nb_train_samples = 24000  # 14400 training samples
   nb_test_samples = 4800
   num_classes = 120
 
-  Y_train = np_utils.to_categorical(Train_l[:nb_train_samples], num_classes)
-  Y_test = np_utils.to_categorical(Test_l[:nb_test_samples], num_classes)
+  Y_train = np_utils.to_categorical(Train_lab[:nb_train_samples], num_classes)
+  Y_test = np_utils.to_categorical(Test_lab[:nb_test_samples], num_classes)
 
 
   if K.image_dim_ordering() == 'th':

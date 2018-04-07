@@ -1,6 +1,16 @@
 from densenet121 import DenseNet
 from data_loader import load_data
-from keras import TensorBoard
+from keras.optimizers import SGD
+from keras.callbacks import Callback, TensorBoard
+
+class LossHistory(Callback):
+  def on_train_begin(self, logs={}):
+    self.losses = []
+
+  def on_batch_end(self, batch, logs={}):
+    loss = logs.get('loss')
+    print(loss)
+    self.losses.append(loss)
 
 if __name__ == '__main__':
   
@@ -10,24 +20,23 @@ if __name__ == '__main__':
   batch_size = 16
   nb_epoch = 40
 
-  # Load Cifar10 data. Please implement your own load_data() module for your own dataset
+  # Load data.
   X_train, Y_train,  X_valid, Y_valid= load_data(img_rows, img_cols)
 
   # Load our model
-  model = densenet121_model(img_rows=img_rows, img_cols=img_cols, color_type=channel, num_classes=num_classes)
-  print(X_train.shape)
-  print(Y_train.shape)
-  print(X_valid.shape)
-  print(Y_valid.shape)
+  model = DenseNet(classes=num_classes)
+
   # Start Fine-tuning
 
+  loss = LossHistory()
+  model.compile(loss='categorical_crossentropy', optimizer=SGD(lr=0.01, momentum=0.9, nesterov=True))
   model.fit(X_train, Y_train,
             batch_size=batch_size,
-            nb_epoch=nb_epoch,
+            epochs=nb_epoch,
             shuffle=True,
             verbose=1,
             validation_data=(X_valid, Y_valid),
-            callbacks=[TensorBoard(log_dir='./log')]
+            callbacks=[loss, TensorBoard(log_dir='./log')]
           )
   model.save_weights('dense121_result.h5')
   # Make predictions
